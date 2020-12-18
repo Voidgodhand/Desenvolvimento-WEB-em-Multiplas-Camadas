@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/template.xhtml"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<ui:define name="cabecalho">
+		<ui:include src="/templates/cabecalho.xhtml" />
+	</ui:define>
+	
+	<ui:define name="menu">
+	    <ui:include src="/templates/menu_esquerdo.xhtml" />
+	</ui:define>
+	
+	<ui:define name="conteudo">
+		
+		<h1 style="text-align: center;"  id="tituloPrincipal">VIDEO GAMES</h1>
+		
+		<!-- <p:graphicImage id="imgPrincipal" url="./imagens/image.png" /> -->
+		
+		<p:graphicImage id="imgPrincipal" library="images" name="video_game.jpg" />
+		
+		<p:imageCompare leftImage="/resources/images/lara-ps3.png"
+                rightImage="/resources/images/lara-ps4.png"
+                width="450" height="435"/>   
+            
+		<!-- <p:graphicImage library="images" name="logo2.png" /> -->
+		
+	</ui:define>
+	
+	<ui:define name="rodape">
+	   <ui:include src="/templates/rodape.xhtml" />
+	</ui:define>
+
+</ui:composition>

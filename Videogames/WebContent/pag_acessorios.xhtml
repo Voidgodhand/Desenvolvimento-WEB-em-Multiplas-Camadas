@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/template.xhtml"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<ui:define name="cabecalho">
+		<ui:include src="/templates/cabecalho.xhtml" />
+	</ui:define>
+	
+	<ui:define name="menu">
+	    <ui:include src="/templates/menu_esquerdo.xhtml" />
+	</ui:define>
+	
+	<ui:define name="conteudo">
+		
+		<h:form id="formTabela">
+			<p:dataTable id="tabelaAcessorios" var="acessorio" value="#{acessorioBean.listaModelAcessorios}"
+					filteredValue="#{acessorioBean.listaFiltradaModelAcessorios}" 
+			 		rows="10"
+		            paginator="true"
+		            rowsPerPageTemplate="5,10,15" 
+		            emptyMessage="Nenhum acessorio cadastrado no banco de dados" >
+		            
+			    <p:column filterBy="#{acessorio.id}" 
+			    	headerText="Id" footerText="contains" 
+			    	filterMatchMode="contains" >
+			        	
+			        	<h:outputText value="#{acessorio.id}" />
+			    </p:column>
+			 
+			    <p:column headerText="Nome">
+			        <h:outputText value="#{acessorio.nome}" />
+			    </p:column>
+			    
+			    <p:column headerText="Numero">
+			        <h:outputText value="#{acessorio.numero}" />
+			    </p:column>
+			    			 			    
+			    <p:column headerText="*">
+		            
+		            <p:commandButton icon="pi pi-pencil"
+		            	actionListener="#{acessorioBean.PrepararUpdate}"
+			    		onclick="PF('dlgAlterarAcessorio').show()"
+			    		update=":fAlterarAcessorio:pgAlterarAcessorio" />
+		            	
+		            <p:commandButton icon="pi pi-trash" 
+		            	actionListener="#{acessorioBean.PrepararDelete}"
+		            	onclick="PF('dlgExcluirAcessorio').show();"
+			    		update=":fExcluirAcessorio:pgExcluirAcessorio" />
+			    		
+		        </p:column>
+		        
+		        <f:facet name="footer">
+			    	<p:commandButton value="Novo Acessorio" icon="pi pi-user-plus"
+			    	actionListener="#{acessorioBean.PrepararNovo}"
+			    	oncomplete="PF('dlgCadastrarAcessorio').show();"
+			    	update=":fCadastrarAcessorio:pgCadastrarAcessorio" />
+			    </f:facet>
+		        
+			</p:dataTable>
+		</h:form>
+		
+		<p:dialog header="Cadastrar Acessorio" widgetVar="dlgCadastrarAcessorio" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fCadastrarAcessorio" >
+		        
+		        <p:outputPanel id="painelCadastrarAcessorio" style="text-align:center;">
+		            
+		            <p:panelGrid id="pgCadastrarAcessorio" columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Nome" />
+		                <p:inputText value="#{acessorioBean.acessorio.nome}" />
+		               
+		                <h:outputText value="Console" />
+		                <p:selectOneMenu id="selConsole" value="#{acessorioBean.acessorio.numero}">
+		                	
+				            <f:selectItems value="#{acessorioBean.List()}" 
+				            	var="c" itemLabel="#{c.nome}" itemValue="#{c.numero}" />
+				            	
+				        </p:selectOneMenu>
+		                
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Cadastrar" oncomplete="PF('dlgCadastrarAcessorio').hide();" 
+							actionListener="#{acessorioBean.Insert}" 
+							update=":formTabela:tabelaAcessorios :msgGlobal"/>
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgCadastrarAcessorio').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+ 		
+ 		<p:dialog header="Excluir Acessorio" widgetVar="dlgExcluirAcessorio" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fExcluirAcessorio" >
+		        
+		        <p:outputPanel id="pgExcluirAcessorio" style="text-align:center;">
+		            
+		            <p:panelGrid  columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Id:" />
+		                <h:outputText value="#{acessorioBean.acessorio.id}" />
+		 
+		                <h:outputText value="Nome" />
+		                <h:outputText value="#{acessorioBean.acessorio.nome}" />
+		                
+		                <h:outputText value="Numero" />
+		                <h:outputText value="#{acessorioBean.acessorio.numero}" />
+		                
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Excluir" oncomplete="PF('dlgExcluirAcessorio').hide();" 
+							actionListener="#{acessorioBean.Delete}" 
+							update=":formTabela:tabelaAcessorios :msgGlobal" />
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgExcluirAcessorio').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+ 		
+ 		<p:dialog header="Alterar Acessorio" widgetVar="dlgAlterarAcessorio" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fAlterarAcessorio" >
+		        
+		        <p:outputPanel id="pgAlterarAcessorio" style="text-align:center;">
+		            
+		            <p:panelGrid columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Id" />
+		                <h:outputText value="#{acessorioBean.acessorio.id}" />
+		                
+		                <h:outputText value="Nome" />
+		                <p:inputText value="#{acessorioBean.acessorio.nome}" />
+		                
+
+		                <h:outputText value="Console" />
+		                <p:selectOneMenu id="selConsole" value="#{acessorioBean.acessorio.numero}">
+		                	
+				            <f:selectItems value="#{acessorioBean.List()}" 
+				            	var="c" itemLabel="#{c.nome}" itemValue="#{c.numero}" />
+				            	
+				        </p:selectOneMenu>
+				        
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Alterar" oncomplete="PF('dlgAlterarAcessorio').hide();" 
+							actionListener="#{acessorioBean.Update}" 
+							update=":formTabela:tabelaAcessorios :msgGlobal"/>
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgAlterarAcessorio').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+    	
+	</ui:define>
+	
+	<ui:define name="rodape">
+	   <ui:include src="/templates/rodape.xhtml" />
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,17 @@
+#imgPrincipal {
+	float:none; 
+	display:block; 
+	margin-left:auto; 
+	margin-right:auto;
+}
+
+
+#corpoPagina {
+	color: blue !important;
+}
+
+.ui-clock {
+	float: right;
+	background: #c0c0c0;
+	color: red;
+}

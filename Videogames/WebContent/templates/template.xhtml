@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >
+	
+	<h:head>
+		<title>..::VIDEO GAMES::..</title>
+		<h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+		<h:outputStylesheet library="css" name="app.css" />
+	</h:head>
+	<h:body id="corpoPagina">
+		<p:growl id="msgGlobal" life="2000" showDetail="true" sticky="false" />
+		
+		<p:layout fullPage="true">
+		 
+		    <p:layoutUnit position="north" size="70" resizable="false" closable="false" collapsible="false" >
+		        <ui:insert name="cabecalho" />
+		    </p:layoutUnit>
+		 
+		    <p:layoutUnit position="south" size="40" resizable="false" closable="false" collapsible="false" >
+		        <ui:insert name="rodape" />
+		    </p:layoutUnit>
+		 
+		    <p:layoutUnit position="west" size="200" resizable="false" closable="false" collapsible="false">
+		        <ui:insert name="menu" />
+		    </p:layoutUnit>
+		 
+		    <p:layoutUnit position="center">
+		        <ui:insert name="conteudo" />
+		    </p:layoutUnit>
+		    		 
+		</p:layout>
+	</h:body>
+</html>

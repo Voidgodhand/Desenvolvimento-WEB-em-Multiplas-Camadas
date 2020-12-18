@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/template.xhtml"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<ui:define name="cabecalho">
+		<ui:include src="/templates/cabecalho.xhtml" />
+	</ui:define>
+	
+	<ui:define name="menu">
+	    <ui:include src="/templates/menu_esquerdo.xhtml" />
+	</ui:define>
+	
+	<ui:define name="conteudo">
+		
+		<h:form id="formTabela">
+			<p:dataTable id="tabelaControles" var="controle" value="#{controleBean.listaModelControles}"
+					filteredValue="#{controleBean.listaFiltradaModelControles}" 
+			 		rows="10"
+		            paginator="true"
+		            rowsPerPageTemplate="5,10,15" 
+		            emptyMessage="Nenhum controle cadastrado no banco de dados" >
+		            
+			    <p:column filterBy="#{controle.seq}" 
+			    	headerText="Seq" footerText="contains" 
+			    	filterMatchMode="contains" >
+			        	
+			        	<h:outputText value="#{controle.seq}" />
+			    </p:column>
+			 
+			    <p:column headerText="Cor">
+			        <h:outputText value="#{controle.cor}" />
+			    </p:column>
+			    
+			    <p:column headerText="Qtd botoes">
+			        <h:outputText value="#{controle.numero_botoes}" />
+			    </p:column>
+			    
+			    <p:column headerText="*">
+		            
+		            <p:commandButton icon="pi pi-pencil"
+		            	actionListener="#{controleBean.PrepararUpdate}"
+			    		onclick="PF('dlgAlterarControle').show()"
+			    		update=":fAlterarControle:pgAlterarControle" />
+		            	
+		            <p:commandButton icon="pi pi-trash" 
+		            	actionListener="#{controleBean.PrepararDelete}"
+		            	onclick="PF('dlgExcluirControle').show();"
+			    		update=":fExcluirControle:pgExcluirControle" />
+			    		
+		        </p:column>
+		        
+		        <f:facet name="footer">
+			    	<p:commandButton value="Novo Controle" icon="pi pi-user-plus"
+			    	actionListener="#{controleBean.PrepararNovo}"
+			    	oncomplete="PF('dlgCadastrarControle').show();"
+			    	update=":fCadastrarControle:pgCadastrarControle" />
+			    </f:facet>
+		        
+			</p:dataTable>
+		</h:form>
+		
+		<p:dialog header="Cadastrar Controle" widgetVar="dlgCadastrarControle" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fCadastrarControle" >
+		        
+		        <p:outputPanel id="painelCadastrarControle" style="text-align:center;">
+		            
+		            <p:panelGrid id="pgCadastrarControle" columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Cor" />
+		                <p:inputText value="#{controleBean.controle.cor}" />
+		                
+		                <h:outputText value="Qtd botoes" />
+		                <p:inputNumber value="#{controleBean.controle.numero_botoes}"/>
+		                
+		                <h:outputText value="Console" />
+		                <p:selectOneMenu id="selConsole" value="#{controleBean.controle.numero}">
+		                	
+				            <f:selectItems value="#{controleBean.List()}" 
+				            	var="c" itemLabel="#{c.nome}" itemValue="#{c.numero}" />
+				            	
+				        </p:selectOneMenu>
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Cadastrar" oncomplete="PF('dlgCadastrarControle').hide();" 
+							actionListener="#{controleBean.Insert}" 
+							update=":formTabela:tabelaControles :msgGlobal"/>
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgCadastrarControle').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+ 		
+ 		<p:dialog header="Excluir Controle" widgetVar="dlgExcluirControle" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fExcluirControle" >
+		        
+		        <p:outputPanel id="pgExcluirControle" style="text-align:center;">
+		            
+		            <p:panelGrid  columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Seq:" />
+		                <h:outputText value="#{controleBean.controle.seq}" />
+		 
+		                <h:outputText value="Cor" />
+		                <h:outputText value="#{controleBean.controle.cor}" />
+		                
+		                <h:outputText value="Qtd botoes" />
+		                <h:outputText value="#{controleBean.controle.numero_botoes}" />
+		                
+		                <h:outputText value="Numero" />
+		                <h:outputText value="#{controleBean.controle.numero}" />
+		 
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Excluir" oncomplete="PF('dlgExcluirControle').hide();" 
+							actionListener="#{controleBean.Delete}" 
+							update=":formTabela:tabelaControles :msgGlobal" />
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgExcluirControle').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+ 		
+ 		<p:dialog header="Alterar Controle" widgetVar="dlgAlterarControle" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fAlterarControle" >
+		        
+		        <p:outputPanel id="pgAlterarControle" style="text-align:center;">
+		            
+		            <p:panelGrid columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Seq" />
+		                <h:outputText value="#{controleBean.controle.seq}" />
+		                
+		                <h:outputText value="Cor" />
+		                <p:inputText value="#{controleBean.controle.cor}" />
+		                
+		                <h:outputText value="Qtd botoes" />
+		                <p:inputNumber value="#{controleBean.controle.numero_botoes}"/>
+		                
+		                <h:outputText value="Console" />
+		                <p:selectOneMenu id="selConsole" value="#{controleBean.controle.numero}">
+		                	
+				            <f:selectItems value="#{controleBean.List()}" 
+				            	var="c" itemLabel="#{c.nome}" itemValue="#{c.numero}" />
+				            	
+				        </p:selectOneMenu>
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Alterar" oncomplete="PF('dlgAlterarControle').hide();" 
+							actionListener="#{controleBean.Update}" 
+							update=":formTabela:tabelaControles :msgGlobal"/>
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgAlterarControle').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+    	
+	</ui:define>
+	
+	<ui:define name="rodape">
+	   <ui:include src="/templates/rodape.xhtml" />
+	</ui:define>
+
+</ui:composition>

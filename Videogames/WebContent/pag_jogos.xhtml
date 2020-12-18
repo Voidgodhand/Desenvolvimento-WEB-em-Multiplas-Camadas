@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/template.xhtml"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<ui:define name="cabecalho">
+		<ui:include src="/templates/cabecalho.xhtml" />
+	</ui:define>
+	
+	<ui:define name="menu">
+	    <ui:include src="/templates/menu_esquerdo.xhtml" />
+	</ui:define>
+	
+	<ui:define name="conteudo">
+		
+		<h:form id="formTabela">
+			<p:dataTable id="tabelaJogos" var="jogo" value="#{jogoBean.listaModelJogos}"
+					filteredValue="#{jogoBean.listaFiltradaModelJogos}" 
+			 		rows="10"
+		            paginator="true"
+		            rowsPerPageTemplate="5,10,15" 
+		            emptyMessage="Nenhum jogo cadastrado no banco de dados" >
+		            
+			    <p:column filterBy="#{jogo.codigo}" 
+			    	headerText="Codigo" footerText="contains" 
+			    	filterMatchMode="contains" >
+			        	
+			        	<h:outputText value="#{jogo.codigo}" />
+			    </p:column>
+			 
+			    <p:column headerText="Nome">
+			        <h:outputText value="#{jogo.nome}" />
+			    </p:column>
+			    
+			    <p:column headerText="Lancamento">
+			        <h:outputText value="#{jogo.lancamento}" />
+			    </p:column>
+			    
+			    <p:column headerText="*">
+		            
+		            <p:commandButton icon="pi pi-pencil"
+		            	actionListener="#{jogoBean.PrepararUpdate}"
+			    		onclick="PF('dlgAlterarJogo').show()"
+			    		update=":fAlterarJogo:pgAlterarJogo" />
+		            	
+		            <p:commandButton icon="pi pi-trash" 
+		            	actionListener="#{jogoBean.PrepararDelete}"
+		            	onclick="PF('dlgExcluirJogo').show();"
+			    		update=":fExcluirJogo:pgExcluirJogo" />
+			    		
+		        </p:column>
+		        
+		        <f:facet name="footer">
+			    	<p:commandButton value="Novo Jogo" icon="pi pi-user-plus"
+			    	actionListener="#{jogoBean.PrepararNovo}"
+			    	oncomplete="PF('dlgCadastrarJogo').show();"
+			    	update=":fCadastrarJogo:pgCadastrarJogo" />
+			    </f:facet>
+		        
+			</p:dataTable>
+		</h:form>
+		
+		<p:dialog header="Cadastrar Jogo" widgetVar="dlgCadastrarJogo" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fCadastrarJogo" >
+		        
+		        <p:outputPanel id="painelCadastrarJogo" style="text-align:center;">
+		            
+		            <p:panelGrid id="pgCadastrarJogo" columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Nome" />
+		                <p:inputText value="#{jogoBean.jogo.nome}" />
+		                
+		                <h:outputText value="Lancamento" />
+                        <p:inputMask value="#{jogoBean.jogo.lancamento}" mask="99/99/9999"/>
+		                
+		                <h:outputText value="Console" />
+		                <p:selectOneMenu id="selConsole" value="#{jogoBean.jogo.numero}">
+		                	
+				            <f:selectItems value="#{jogoBean.ListConsole()}" 
+				            	var="c" itemLabel="#{c.nome}" itemValue="#{c.numero}" />
+				            	
+				        </p:selectOneMenu>
+				        
+				        <h:outputText value="Desenvolvedora" />
+		                <p:selectOneMenu id="selDesenvolvedora" value="#{jogoBean.jogo.cnpj}">
+		                	
+				            <f:selectItems value="#{jogoBean.ListDesenvolvedora()}" 
+				            	var="d" itemLabel="#{d.nome}" itemValue="#{d.cnpj}" />
+				            	
+				        </p:selectOneMenu>
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Cadastrar" oncomplete="PF('dlgCadastrarJogo').hide();" 
+							actionListener="#{jogoBean.Insert}" 
+							update=":formTabela:tabelaJogos :msgGlobal"/>
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgCadastrarJogo').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+ 		
+ 		<p:dialog header="Excluir Jogo" widgetVar="dlgExcluirJogo" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fExcluirJogo" >
+		        
+		        <p:outputPanel id="pgExcluirJogo" style="text-align:center;">
+		            
+		            <p:panelGrid  columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Codigo:" />
+		                <h:outputText value="#{jogoBean.jogo.codigo}" />
+		 
+		                <h:outputText value="Nome" />
+		                <h:outputText value="#{jogoBean.jogo.nome}" />
+		                
+		                <h:outputText value="Lancamento" />
+		                <h:outputText value="#{jogoBean.jogo.lancamento}" />
+		                
+		                <h:outputText value="Numero" />
+		                <h:outputText value="#{jogoBean.jogo.numero}" />
+		                
+		                <h:outputText value="Cnpj" />
+		                <h:outputText value="#{jogoBean.jogo.cnpj}" />
+		                
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Excluir" oncomplete="PF('dlgExcluirJogo').hide();" 
+							actionListener="#{jogoBean.Delete}" 
+							update=":formTabela:tabelaJogos :msgGlobal" />
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgExcluirJogo').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+ 		
+ 		<p:dialog header="Alterar Jogo" widgetVar="dlgAlterarJogo" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fAlterarJogo" >
+		        
+		        <p:outputPanel id="pgAlterarJogo" style="text-align:center;">
+		            
+		            <p:panelGrid columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Codigo" />
+		                <h:outputText value="#{jogoBean.jogo.codigo}" />
+		                
+		                <h:outputText value="Nome" />
+		                <p:inputText value="#{jogoBean.jogo.nome}" />
+		                
+		                <h:outputText value="Lancamento" />
+                        <p:inputMask value="#{jogoBean.jogo.lancamento}" mask="99/99/9999"/>
+		                
+		                <h:outputText value="Console" />
+		                <p:selectOneMenu id="selConsole" value="#{jogoBean.jogo.numero}">
+		                	
+				            <f:selectItems value="#{jogoBean.ListConsole()}" 
+				            	var="c" itemLabel="#{c.nome}" itemValue="#{c.numero}" />
+				            	
+				        </p:selectOneMenu>
+				        
+				        <h:outputText value="Desenvolvedora" />
+		                <p:selectOneMenu id="selDesenvolvedora" value="#{jogoBean.jogo.cnpj}">
+		                	
+				            <f:selectItems value="#{jogoBean.ListDesenvolvedora()}" 
+				            	var="d" itemLabel="#{d.nome}" itemValue="#{d.cnpj}" />
+				            	
+				        </p:selectOneMenu>
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Alterar" oncomplete="PF('dlgAlterarJogo').hide();" 
+							actionListener="#{jogoBean.Update}" 
+							update=":formTabela:tabelaJogos :msgGlobal"/>
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgAlterarJogo').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+    	
+	</ui:define>
+	
+	<ui:define name="rodape">
+	   <ui:include src="/templates/rodape.xhtml" />
+	</ui:define>
+
+</ui:composition>

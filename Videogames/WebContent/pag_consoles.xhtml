@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/template.xhtml"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<ui:define name="cabecalho">
+		<ui:include src="/templates/cabecalho.xhtml" />
+	</ui:define>
+	
+	<ui:define name="menu">
+	    <ui:include src="/templates/menu_esquerdo.xhtml" />
+	</ui:define>
+	
+	<ui:define name="conteudo">
+		
+		<h:form id="formTabela">
+			<p:dataTable id="tabelaConsoles" var="console" value="#{consoleBean.listaModelConsoles}"
+					filteredValue="#{consoleBean.listaFiltradaModelConsoles}" 
+			 		rows="10"
+		            paginator="true"
+		            rowsPerPageTemplate="5,10,15" 
+		            emptyMessage="Nenhum console cadastrado no banco de dados" >
+		            
+			    <p:column filterBy="#{console.numero}" 
+			    	headerText="Numero" footerText="contains" 
+			    	filterMatchMode="contains" >
+			        	
+			        	<h:outputText value="#{console.numero}" />
+			    </p:column>
+			 
+			    <p:column headerText="Nome">
+			        <h:outputText value="#{console.nome}" />
+			    </p:column>
+			    
+			    <p:column headerText="*">
+		            
+		            <p:commandButton icon="pi pi-pencil"
+		            	actionListener="#{consoleBean.PrepararUpdate}"
+			    		onclick="PF('dlgAlterarConsole').show()"
+			    		update=":fAlterarConsole:pgAlterarConsole" />
+		            	
+		            <p:commandButton icon="pi pi-trash" 
+		            	actionListener="#{consoleBean.PrepararDelete}"
+		            	onclick="PF('dlgExcluirConsole').show();"
+			    		update=":fExcluirConsole:pgExcluirConsole" />
+			    		
+		        </p:column>
+		        
+		        <f:facet name="footer">
+			    	<p:commandButton value="Novo Console" icon="pi pi-user-plus"
+			    	actionListener="#{consoleBean.PrepararNovo}"
+			    	oncomplete="PF('dlgCadastrarConsole').show();"
+			    	update=":fCadastrarConsole:pgCadastrarConsole" />
+			    </f:facet>
+		        
+			</p:dataTable>
+		</h:form>
+		
+		<p:dialog header="Cadastrar Console" widgetVar="dlgCadastrarConsole" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fCadastrarConsole" >
+		        
+		        <p:outputPanel id="painelCadastrarConsole" style="text-align:center;">
+		            
+		            <p:panelGrid id="pgCadastrarConsole" columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Nome" />
+		                <p:inputText value="#{consoleBean.console.nome}" />
+		                
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Cadastrar" oncomplete="PF('dlgCadastrarConsole').hide();" 
+							actionListener="#{consoleBean.Insert}" 
+							update=":formTabela:tabelaConsoles :msgGlobal"/>
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgCadastrarConsole').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+ 		
+ 		<p:dialog header="Excluir Console" widgetVar="dlgExcluirConsole" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fExcluirConsole" >
+		        
+		        <p:outputPanel id="pgExcluirConsole" style="text-align:center;">
+		            
+		            <p:panelGrid  columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Numero:" />
+		                <h:outputText value="#{consoleBean.console.numero}" />
+		 
+		                <h:outputText value="Nome" />
+		                <h:outputText value="#{consoleBean.console.nome}" />
+		                
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Excluir" oncomplete="PF('dlgExcluirConsole').hide();" 
+							actionListener="#{consoleBean.Delete}" 
+							update=":formTabela:tabelaConsoles :msgGlobal" />
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgExcluirConsole').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+ 		
+ 		<p:dialog header="Alterar Console" widgetVar="dlgAlterarConsole" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false" appendTo="@(body)">
+	       
+	        <h:form id="fAlterarConsole" >
+		        
+		        <p:outputPanel id="pgAlterarConsole" style="text-align:center;">
+		            
+		            <p:panelGrid columns="2" columnClasses="label,value">
+		               
+		                <h:outputText value="Numero" />
+		                <h:outputText value="#{consoleBean.console.numero}" />
+		                
+		                <h:outputText value="Nome" />
+		                <p:inputText value="#{consoleBean.console.nome}" />
+		                
+		            </p:panelGrid>
+		            
+		            <h:panelGrid columns="2">
+				
+						<p:commandButton value="Alterar" oncomplete="PF('dlgAlterarConsole').hide();" 
+							actionListener="#{consoleBean.Update}" 
+							update=":formTabela:tabelaConsoles :msgGlobal"/>
+					
+						<p:commandButton value="Cancel" onclick="PF('dlgAlterarConsole').hide();" />
+					
+					</h:panelGrid>
+		            
+		        </p:outputPanel>
+		        
+	        </h:form>
+	        
+    	</p:dialog>
+    	
+	</ui:define>
+	
+	<ui:define name="rodape">
+	   <ui:include src="/templates/rodape.xhtml" />
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	<h:form>
+		<p:menu style="width:auto" toggleable="true">
+
+			<p:submenu label="Gerenciamento" expanded="false">
+			
+			    <p:menuitem value="Cad. de Consoles" icon="pi pi-user-edit" url="./pag_consoles.jsf" />
+			    
+			    <p:menuitem value="Cad. de Controles" icon="pi pi-user-edit" url="./pag_controles.jsf" />
+					
+				<p:menuitem value="Cad. de Jogos" icon="pi pi-user-edit" url="./pag_jogos.jsf" />
+				
+				<p:menuitem value="Cad. de Acessorios" icon="pi pi-user-edit" url="./pag_acessorios.jsf" />
+				
+				<p:menuitem value="Cad. de Desenvolvedoras" icon="pi pi-user-edit" url="./pag_desenvolvedoras.jsf" />
+					
+			</p:submenu>
+			
+		</p:menu>
+		
+	</h:form>
+	
+</ui:composition>
